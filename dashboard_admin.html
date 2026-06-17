@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Админ панель</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body onload="initAdminDashboard()">
+<div class="page-shell dashboard-shell">
+    <div class="layout">
+        <aside class="sidebar admin-sidebar">
+            <div class="sidebar-brand">
+                <span class="brand-mark">⌘</span>
+                <div class="brand-copy">
+                    <strong>Панель</strong>
+                    <span>Admin</span>
+                </div>
+            </div>
+
+            <button id="adminTabAll" class="sidebar-item active-tab" onclick="switchAdminTab('all')">
+                <span class="sidebar-icon">📄</span>
+                <span class="sidebar-label">Все заявки</span>
+            </button>
+            <button id="adminTabAnalysis" class="sidebar-item" onclick="switchAdminTab('analysis')">
+                <span class="sidebar-icon">📊</span>
+                <span class="sidebar-label">Аналитика</span>
+            </button>
+            <button id="adminTabHistory" class="sidebar-item" onclick="switchAdminTab('history')">
+                <span class="sidebar-icon">🕘</span>
+                <span class="sidebar-label">История</span>
+            </button>
+            <button id="adminTabOverview" class="sidebar-item" onclick="switchAdminTab('overview')">
+                <span class="sidebar-icon">⚙️</span>
+                <span class="sidebar-label">Обзор</span>
+            </button>
+        </aside>
+
+        <main class="dashboard-panel glass-card admin-main-panel">
+            <header class="page-header admin-header">
+                <div>
+                    <p class="eyebrow">Админская панель</p>
+                    <h2>Управление заявками</h2>
+                    <p class="subtitle">Анализируйте, обрабатывайте и управляйте заявками в одном интерфейсе.</p>
+                </div>
+                <div class="header-actions">
+                    <button class="button-secondary" onclick="logout()">Выйти</button>
+                </div>
+            </header>
+
+            <section class="panel-card admin-section" id="allSection">
+                <div class="section-heading">
+                    <h3>Все заявки</h3>
+                    <span class="section-note">Фильтруйте и управляйте заявками в режиме реального времени.</span>
+                </div>
+                
+                <div class="filter-row">
+                    <div class="input-group filter-input">
+                        <span class="input-icon" data-icon="🔎"></span>
+                        <input id="adminSearchInput" placeholder="Поиск по заявкам" oninput="loadAllRequests()">
+                    </div>
+                    <div class="input-group filter-select">
+                        <span class="input-icon" data-icon="⚙️"></span>
+                        <select id="adminStatusFilter" onchange="loadAllRequests()">
+                            <option value="">Все статусы</option>
+                            <option value="new">Новая</option>
+                            <option value="in progress">В работе</option>
+                            <option value="closed">Закрыта</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="allRequests" class="requests-list"></div>
+            </section>
+
+            <section class="panel-card admin-section hidden" id="analysisSection">
+                <div class="section-heading">
+                    <h3>Анализ заявок</h3>
+                    <span class="section-note">Здесь отображается ключевая статистика и тренды.</span>
+                </div>
+                <div class="stats-grid admin-stats">
+                    <article class="stats-card">
+                        <span class="metric-label">Новые заявки</span>
+                        <strong id="metricNewCount">0</strong>
+                    </article>
+                    <article class="stats-card">
+                        <span class="metric-label">В работе</span>
+                        <strong id="metricProgressCount">0</strong>
+                    </article>
+                    <article class="stats-card">
+                        <span class="metric-label">Закрытые</span>
+                        <strong id="metricClosedCount">0</strong>
+                    </article>
+                    <article class="stats-card">
+                        <span class="metric-label">Просроченные</span>
+                        <strong id="metricOverdueCount">0</strong>
+                    </article>
+                </div>
+                <div class="chart-panel" style="margin-bottom: 20px;">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h4>Статус заявок</h4>
+                            <span id="chartSummary" class="small-text"></span>
+                        </div>
+                        <div class="chart">
+                            <div class="chart-item">
+                                <div class="chart-item-label">Новые</div>
+                                <div class="chart-track"><div id="chartBarNew" class="chart-bar new"></div></div>
+                                <div id="chartCountNew" class="chart-count">0</div>
+                            </div>
+                            <div class="chart-item">
+                                <div class="chart-item-label">В работе</div>
+                                <div class="chart-track"><div id="chartBarProgress" class="chart-bar progress"></div></div>
+                                <div id="chartCountProgress" class="chart-count">0</div>
+                            </div>
+                            <div class="chart-item">
+                                <div class="chart-item-label">Закрыты</div>
+                                <div class="chart-track"><div id="chartBarClosed" class="chart-bar closed"></div></div>
+                                <div id="chartCountClosed" class="chart-count">0</div>
+                            </div>
+                        </div>
+                        </div>
+            </div>
+
+                    <section class="panel-card admin-section" style="margin-bottom: 20px;">
+                    <div class="section-heading">
+                        <h3>Активные заявки по категориям</h3>
+                    </div>
+                    <div id="activeByCategory" style="display:grid; grid-template-columns: repeat(5, 1fr); gap: 12px;"></div>
+                </section>
+
+                <section class="panel-card admin-section" style="margin-bottom: 20px;">
+                    <div class="section-heading">
+                        <h3>Среднее время закрытия по категориям</h3>
+                    </div>
+                    <div id="avgTimeByCategory" style="display:grid; grid-template-columns: repeat(5, 1fr); gap: 12px;"></div>
+                </section>
+
+                <section class="panel-card admin-section" style="margin-bottom: 20px;">
+                    <div class="section-heading">
+                        <h3>Средняя оценка по категориям</h3>
+                    </div>
+                    <div id="avgRatingByCategory" style="display:grid; grid-template-columns: repeat(5, 1fr); gap: 12px;"></div>
+                </section>
+            <div class="chart-card rating-chart-card">
+                <div class="chart-header">
+                    <h4>Рейтинг закрытых заявок</h4>
+                    <span id="ratingChartSummary" class="small-text">Распределение оценок по закрытым заявками</span>
+                </div>
+                <div class="rating-pie-card">
+                    <div class="rating-pie" id="ratingPie"></div>
+                    <div id="ratingTooltip" class="rating-tooltip"></div>
+                    <div class="rating-legend" id="ratingLegend"></div>
+                </div>
+            </div>
+    </section>
+
+            <section class="panel-card admin-section hidden" id="historySection">
+                <div class="section-heading">
+                    <h3>Архив закрытых заявок</h3>
+                    <button class="button-secondary" onclick="openChangeHistory()">История изменений</button>
+                </div>
+                <div id="historyList" class="history-list"></div>
+            </section>
+
+            <section class="panel-card admin-section hidden" id="overviewSection">
+                <div class="section-heading">
+                    <h3>Обзор системы</h3>
+                    <span class="section-note">Глобальные метрики и список аккаунтов.</span>
+                </div>
+                <div class="overview-grid">
+                    <article class="overview-card">
+                        <span class="metric-label">Аккаунтов</span>
+                        <strong id="overviewUsers">0</strong>
+                    </article>
+                    <article class="overview-card">
+                        <span class="metric-label">Всего заявок</span>
+                        <strong id="overviewRequests">0</strong>
+                    </article>
+                    <article class="overview-card">
+                        <span class="metric-label">Просроченных новых</span>
+                        <strong id="overviewOverdue">0</strong>
+                    </article>
+                    <article class="overview-card">
+                        <span class="metric-label">Активных статусов</span>
+                        <strong id="overviewActive">0</strong>
+                    </article>
+                </div>
+                <div id="overviewExtra" class="section-note overview-note"></div>
+                <div class="users-table-card">
+                    <h4>Аккаунты</h4>
+                    <div class="table-wrapper">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Логин</th>
+                                    <th>Роль</th>
+                                    <th>Категория админа</th>
+                                    <th>Создан</th>
+                                    <th>Заявок</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="overview-actions">
+                    <button class="button-primary" onclick="openAccountManager()">Управление аккаунтами</button>
+                </div>
+            </section>
+        </main>
+    </div>
+</div>
+
+<div id="requestModal" class="modal">
+    <div class="modal-backdrop" onclick="closeRequestModal()"></div>
+    <div class="modal-dialog" onclick="event.stopPropagation()">
+        <button class="modal-close" onclick="closeRequestModal()">×</button>
+        <div class="modal-content"></div>
+    </div>
+</div>
+
+<div id="changeHistoryModal" class="modal">
+    <div class="modal-backdrop" onclick="closeChangeHistory()"></div>
+    <div class="modal-dialog" onclick="event.stopPropagation()">
+        <button class="modal-close" onclick="closeChangeHistory()">×</button>
+        <div class="modal-content">
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+                <h3 style="margin:0;">История изменений</h3>
+            </div>
+            <div id="changeHistoryContent" style="max-height:60vh;overflow:auto;margin-top:12px;padding-right:8px;"></div>
+        </div>
+    </div>
+</div>
+
+<div id="accountManagerModal" class="modal">
+    <div class="modal-backdrop" onclick="closeAccountManager()"></div>
+    <div class="modal-dialog" onclick="event.stopPropagation()">
+        <button class="modal-close" onclick="closeAccountManager()">×</button>
+        <div class="modal-content">
+            <div class="account-manager-header">
+                <h3>Управление аккаунтами</h3>
+                <div class="account-manager-tabs">
+                    <button id="accountManagerAdd" class="tab-button active" onclick="renderAccountManager('add')">Добавить</button>
+                    <button id="accountManagerDelete" class="tab-button" onclick="renderAccountManager('delete')">Удалить</button>
+                </div>
+            </div>
+            <div id="accountManagerContent"></div>
+        </div>
+    </div>
+</div>
+
+<script src="api.js"></script>
+<script src="dashboard_admin.js"></script>
+</body>
+</html>

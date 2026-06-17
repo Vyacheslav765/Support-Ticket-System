@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Служба поддержки</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body onload="initAuthPage()">
+<div class="page-shell auth-shell">
+    <aside class="auth-panel glass-card auth-visual">
+        <div class="auth-visual-copy">
+            <p class="eyebrow">Tech Support</p>
+            <h1>Техническая поддержка</h1>
+            <p class="auth-description">Быстрое создание заявок, удобное отслеживание статусов и эффективная обработка запросов.</p>
+        </div>
+
+        <div class="visual-art">
+            <span class="shape glow-circle"></span>
+            <span class="shape soft-wave"></span>
+            <span class="shape small-dot"></span>
+            <span class="shape glow-circle" style="top: 180px; left: 60px; width: 160px; height: 160px; background: rgba(95, 108, 255, 0.16);"></span>
+            <span class="shape small-dot" style="top: 420px; right: 40px; width: 70px; height: 70px; background: rgba(255, 255, 255, 0.82);"></span>
+        </div>
+    </aside>
+
+    <main class="auth-panel glass-card auth-form-card">
+        <div class="auth-form-header">
+            <div>
+                <p class="eyebrow">Вход в систему</p>
+                <h2>Добро пожаловать</h2>
+                <p class="subtitle">Войдите в свою учетную запись</p>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <button id="loginTab" class="tab active" onclick="showLogin()">Вход</button>
+            <button id="registerTab" class="tab" onclick="showRegister()">Регистрация</button>
+        </div>
+
+        <div id="loginForm" class="form active">
+            <div class="input-group">
+                <span class="input-icon" data-icon="👤"></span>
+                <input type="text" id="loginUsername" placeholder="Логин">
+            </div>
+            <div class="input-group">
+                <span class="input-icon" data-icon="🔒"></span>
+                <input type="password" id="loginPassword" placeholder="Пароль">
+            </div>
+            <button class="button-primary" onclick="login()">Войти</button>
+        </div>
+
+                <div id="registerForm" class="form">
+            <div class="input-group">
+                <span class="input-icon" data-icon="👤"></span>
+                <input type="text" id="regUsername" placeholder="Логин">
+            </div>
+            <div class="input-group">
+                <span class="input-icon" data-icon="🔒"></span>
+                <input type="password" id="regPassword" placeholder="Пароль">
+            </div>
+            <button class="button-primary" onclick="register()">Создать аккаунт</button>
+        </div>
+    </main>
+</div>
+
+<script src="api.js"></script>
+<script src="auth.js"></script>
+</body>
+</html>

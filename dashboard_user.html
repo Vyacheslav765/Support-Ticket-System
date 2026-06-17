@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Кабинет пользователя</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body onload="initUserDashboard()">
+<div class="page-shell dashboard-shell">
+    <main class="dashboard-panel glass-card">
+        <header class="page-header">
+            <div>
+                <p class="eyebrow">Пользовательская панель</p>
+                <h2 id="userGreeting">Здравствуйте, пользователь</h2>
+                <p class="subtitle">Создавайте, фильтруйте и отслеживайте заявки в удобном интерфейсе.</p>
+            </div>
+            <button class="button-secondary" onclick="logout()">Выйти</button>
+        </header>
+
+        <section class="panel-card full-width">
+            <div class="section-heading">
+                <h3>Новая заявка</h3>
+                <span class="section-note">Добавьте краткий заголовок и описание заявки.</span>
+            </div>
+            <div class="input-group">
+                <span class="input-icon" data-icon="📝"></span>
+                <input id="requestTitle" placeholder="Заголовок">
+            </div>
+            <div class="input-group textarea-group">
+                <span class="input-icon" data-icon="✍️"></span>
+                <textarea id="requestDesc" placeholder="Описание" rows="5"></textarea>
+            </div>
+            <button class="button-primary" onclick="createRequest()">Создать заявку</button>
+        </section>
+
+        <section class="panel-card">
+            <div class="section-heading">
+                <h3>Поиск и фильтр</h3>
+                <span class="section-note">Отфильтруйте список по статусу и тексту.</span>
+            </div>
+            <div class="filter-row">
+                <div class="input-group filter-input">
+                    <span class="input-icon" data-icon="🔎"></span>
+                    <input id="userSearchInput" placeholder="Поиск по заголовку или описанию" oninput="loadUserRequests()">
+                </div>
+                <div class="input-group filter-select">
+                    <span class="input-icon" data-icon="⚙️"></span>
+                    <select id="userStatusFilter" onchange="loadUserRequests()">
+                        <option value="">Все статусы</option>
+                        <option value="new">Новая</option>
+                        <option value="in progress">В работе</option>
+                        <option value="closed">Закрыта</option>
+                    </select>
+                </div>
+            </div>
+        </section>
+
+        <section class="panel-card">
+            <div class="section-heading">
+                <h3>Мои заявки</h3>
+                <span class="section-note">Нажмите на заявку, чтобы открыть подробности.</span>
+            </div>
+            <div id="myRequests" class="requests-list"></div>
+        </section>
+    </main>
+</div>
+
+<div id="requestModal" class="modal">
+    <div class="modal-backdrop" onclick="closeRequestModal()"></div>
+    <div class="modal-dialog" onclick="event.stopPropagation()">
+        <button class="modal-close" onclick="closeRequestModal()">×</button>
+        <div class="modal-content"></div>
+    </div>
+</div>
+
+<script src="api.js"></script>
+<script src="dashboard_user.js"></script>
+</body>
+</html>
