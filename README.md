@@ -60,4 +60,4 @@ npm install
 node server.js
 ```
 
-Открыть `http://localhost:3000`. Логин по умолчанию: `admin` / `1234` — смените сразу после входа ⚠️
+Открыть `http://localhost:3000`. Логин по умолчанию: `admin` / `1234`
